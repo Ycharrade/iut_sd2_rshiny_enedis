@@ -1,0 +1,201 @@
+---
+always_allow_html: true
+author: "Charrade Yoann, Cotte Loïc"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    toc: true
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+  pdf_document:
+    toc: true
+  always_allow_html: default
+title: "Analyse des Diagnostics de Performance Énergétique dans l'Allier"
+params:
+  CP: 3700
+---
+```{r}
+print(params$CP)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(knitr)
+library(DT)
+
+# Store the parameter value in a separate variable
+cp <- as.character(params$CP)  # Copy the value of the parameter
+
+# Print the copied parameter value for debugging
+print(paste("Postal code parameter:", cp))
+
+# Load the dataset
+df <- read.csv("merged_donnee.csv", sep = ";", stringsAsFactors = FALSE)
+
+# Ensure correct data types
+df$Surface_habitable_logement <- as.numeric(as.character(df$Surface_habitable_logement))
+df$Code_postal_.BAN. <- as.character(df$Code_postal_.BAN.)
+
+# Check for NA values and filter rows based on postal code
+if (!is.null(cp) && cp != "") {
+  print("Filtering rows...")
+  df <- df %>% filter(!is.na(Code_postal_.BAN.) & Code_postal_.BAN. != cp)
+} else {
+  print("No filtering applied: Postal code parameter is empty.")
+}
+
+# Print the first few rows to verify the filter works
+print(head(df))
+
+```
+
+## Introduction
+
+Ce rapport analyse les Diagnostics de Performance Énergétique (DPE) dans le département de l'Allier. Les DPE fournissent des informations cruciales sur la consommation d'énergie et l'impact environnemental des logements.
+
+## KPI
+
+
+```{r kpi}
+kpi_data <- df %>%
+  summarise(
+    Nombre_logements = n(),
+    Surface_moyenne = mean(Surface_habitable_logement, na.rm = TRUE),
+    Pourcentageetq_A_B = mean(Etiquette_DPE %in% c("A", "B"), na.rm = TRUE) * 100,
+    Année_construction_moyenne = mean(Année_construction, na.rm = TRUE)
+  )
+
+kable(t(kpi_data), col.names = "Valeur", digits = 0)
+```
+
+## Répartition des étiquettes DPE
+
+```{r dpe_distribution}
+ggplotly(
+  ggplot(df, aes(x = Etiquette_DPE, fill = Etiquette_DPE)) +
+    geom_bar() +
+    scale_fill_manual(values = c("A" = "#319834", "B" = "#33cc31", "C" = "#fff200", 
+                                 "D" = "#ff9a00", "E" = "#ff0000", "F" = "#bb0000", "G" = "#770000")) +
+    theme_minimal() +
+    labs(title = "Répartition des étiquettes DPE", x = "Étiquette DPE", y = "Nombre de logements")
+)
+```
+## Répartition des types de bâtiments
+```{r}
+ggplot(df, aes(x = Type_bâtiment, fill = Type_bâtiment)) +
+  geom_bar() +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Répartition des types de bâtiments", 
+       x = "Type de bâtiment", y = "Nombre de logements")
+
+```
+
+## Relation entre surface habitable et consommation énergétique
+
+```{r surface_consommation}
+ggplotly(
+  ggplot(df, aes(x = Etiquette_DPE, y = Surface_habitable_logement, fill = Etiquette_DPE)) +
+    geom_boxplot() +
+    scale_fill_manual(values = c("A" = "#319834", "B" = "#33cc31", "C" = "#fff200", 
+                                 "D" = "#ff9a00", "E" = "#ff0000", "F" = "#bb0000", "G" = "#770000")) +
+    theme_minimal() +
+    labs(title = "Distribution de la surface habitable par étiquette DPE", 
+         x = "Étiquette DPE", 
+         y = "Surface habitable (m²)") +
+    theme(legend.position = "none")
+)
+```
+## Emissions de GES par type d'énergie de chauffage
+```{r emissions_ges_energie}
+# Préparation des données
+ges_energy_data <- df %>%
+  group_by(Type_énergie_principale_chauffage, Etiquette_GES) %>%
+  summarise(Count = n(), .groups = 'drop') %>%
+  group_by(Type_énergie_principale_chauffage) %>%
+  mutate(Percentage = Count / sum(Count) * 100) %>%
+  ungroup() %>%
+  arrange(desc(sum(Count))) %>%
+  filter(Type_énergie_principale_chauffage %in% (group_by(., Type_énergie_principale_chauffage) %>% 
+                                                   summarise(total = sum(Count), .groups = 'drop') %>% 
+                                                   top_n(5, total) %>% 
+                                                   pull(Type_énergie_principale_chauffage)))
+
+# Création du graphique
+ggplotly(
+  ggplot(ges_energy_data, aes(x = reorder(Type_énergie_principale_chauffage, -Percentage), 
+                              y = Percentage, fill = Etiquette_GES)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = c("A" = "#319834", "B" = "#33cc31", "C" = "#fff200", 
+                                 "D" = "#ff9a00", "E" = "#ff0000", "F" = "#bb0000", "G" = "#770000")) +
+    coord_flip() +
+    theme_minimal() +
+    labs(title = "Répartition des étiquettes GES par type d'énergie de chauffage (Top 5)", 
+         x = "Type d'énergie", 
+         y = "Pourcentage de logements",
+         fill = "Étiquette GES") +
+    scale_y_continuous(labels = scales::percent_format(scale = 1))
+)
+```
+
+## Distribution des types d'énergie principale de chauffage
+
+```{r energie_chauffage}
+# Préparation des données
+energy_data <- df %>%
+  count(Type_énergie_principale_chauffage) %>%
+  arrange(desc(n)) %>%
+  mutate(Pourcentage = n / sum(n) * 100) %>%
+  top_n(10, n)  # Prendre les 10 types d'énergie les plus fréquents
+
+# Création du graphique
+ggplotly(
+  ggplot(energy_data, aes(x = reorder(Type_énergie_principale_chauffage, n), y = Pourcentage, fill = Type_énergie_principale_chauffage)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    theme_minimal() +
+    labs(title = "Top 10 des types d'énergie principale de chauffage", 
+         x = "", 
+         y = "Pourcentage de logements") +
+    scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+    theme(legend.position = "none",
+          axis.text.y = element_text(size = 10)) +
+    scale_fill_viridis_d()
+)
+```
+
+## Évolution des étiquettes DPE selon l'année de construction
+
+```{r dpe_annee}
+ggplotly(
+  ggplot(df %>% filter(Année_construction >= 1970 & Année_construction <= 2024), 
+         aes(x = Année_construction, fill = Etiquette_DPE, color = Etiquette_DPE)) +
+    geom_density(alpha = 0.3) +
+    scale_fill_manual(values = c("A" = "#319834", "B" = "#33cc31", "C" = "#fff200", 
+                                 "D" = "#ff9a00", "E" = "#ff0000", "F" = "#bb0000", "G" = "#770000")) +
+    scale_color_manual(values = c("A" = "#319834", "B" = "#33cc31", "C" = "#fff200", 
+                                  "D" = "#ff9a00", "E" = "#ff0000", "F" = "#bb0000", "G" = "#770000")) +
+    theme_minimal() +
+    labs(title = "Distribution des étiquettes DPE par année de construction (1970-2024)", 
+         x = "Année de construction", 
+         y = "Densité") +
+    theme(legend.position = "right") +
+    scale_x_continuous(limits = c(1970, 2024), breaks = seq(1970, 2020, by = 10))
+)
+```
+
+## Tableau détaillé des données
+
+```{r data_table}
+datatable(df, options = list(pageLength = 10))
+```
+
+## Conclusion
+L’analyse des DPE dans le département de l’Allier permet d’obtenir une vision claire de la performance énergétique du parc immobilier. Les différents graphiques et indicateurs clés facilitent la compréhension de la répartition des étiquettes DPE, des sources d’énergie utilisées pour le chauffage, ainsi que de l’influence de la surface habitable sur l’efficacité énergétique.
+
+Ces résultats peuvent servir de base pour orienter les politiques locales visant à améliorer la performance énergétique des bâtiments. Ils soulignent également l’importance de sensibiliser les propriétaires et les locataires aux enjeux de la rénovation énergétique pour réduire l’impact environnemental.
