@@ -28,7 +28,7 @@ Assurez-vous d'avoir R installé sur votre machine, ainsi que les packages suiva
 ### Étapes d'installation
 1. Clonez ce repository :
    \`\`\`bash
-   git clone https://github.com/nom_utilisateur/iut_sd2_rshiny_enedis.git
+   git clone https://github.com/Ycharrade/iut_sd2_rshiny_enedis.git
    \`\`\`
 
 2. Ouvrez le fichier RShiny dans RStudio ou votre éditeur préféré.
