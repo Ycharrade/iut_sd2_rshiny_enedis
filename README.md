@@ -15,33 +15,38 @@ Ce projet a été développé dans le cadre d'une étude des données de logemen
 ### Prérequis
 Assurez-vous d'avoir R installé sur votre machine, ainsi que les packages suivants :
 - `shiny`
+- `shinydashboard`
 - `ggplot2`
 - `DT`
-- `httr` (pour les requêtes API)
-- `jsonlite` (pour le traitement des données JSON)
+- `shinyjs`
+- `shinythemes`
+- `dplyr`
+- `leaflet`
+- `plotly`
+- `rsconnect`
 
 ### Étapes d'installation
 1. Clonez ce repository :
-   ```bash
+   \`\`\`bash
    git clone https://github.com/nom_utilisateur/iut_sd2_rshiny_enedis.git
-   ```
+   \`\`\`
 
 2. Ouvrez le fichier RShiny dans RStudio ou votre éditeur préféré.
 
 3. Installez les packages nécessaires si vous ne les avez pas encore :
-   ```R
-   install.packages(c("shiny", "ggplot2", "DT", "httr", "jsonlite"))
-   ```
+   \`\`\`R
+   install.packages(c("shiny", "shinydashboard", "ggplot2", "DT", "shinyjs", "shinythemes", "dplyr", "leaflet", "plotly", "rsconnect"))
+   \`\`\`
 
 4. Lancez l'application :
-   ```R
-   shiny::runApp("code_officiel.R")
-   ```
+   \`\`\`R
+   shiny::runApp("app.R")
+   \`\`\`
 
 ## Architecture du projet
 Le projet est divisé en deux parties principales :
 1. **Récupération des données** : Le script `code_recup_donnee_allier_api.R` s'occupe de récupérer les données via l'API.
-2. **Visualisation** : Le script `code_officiel.R` contient toute la logique pour afficher les données, les graphiques et la carte.
+2. **Visualisation** : Le script `App.R` contient toute la logique pour afficher les données, les graphiques et la carte.
 
 ## Auteur
 - **Yoann Charrade** : Gestion des données, récupération via API, intégration des coordonnées pour la carte.
