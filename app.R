@@ -1,3 +1,23 @@
+# Liste des packages nécessaires
+packages <- c(
+  "shiny", "shinydashboard", "ggplot2", "DT", 
+  "shinyjs", "shinythemes", "dplyr", 
+  "leaflet", "plotly", "rsconnect"
+)
+
+# Fonction pour installer les packages manquants
+install_if_missing <- function(pkg) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+    library(pkg, character.only = TRUE)
+  }
+}
+
+# Installer et charger les packages
+lapply(packages, install_if_missing)
+
+
+
 library(shiny)
 library(shinydashboard)
 library(ggplot2)
