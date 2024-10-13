@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///C:/Users/gayod/OneDrive/Bureau/doc%20technique.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Fonctionnelle - Application RShiny</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        p {
+            margin: 15px 0;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .section {
+            margin-bottom: 60px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .highlight {
+            background-color: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        ul {
+            margin-left: 20px;
+            list-style-type: square;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 0.9em;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Documentation Fonctionnelle - Application RShiny</h1>
+        <p>Cette application permet la visualisation des données relatives aux logements du département de l'Allier via une interface web interactive. Nous allons explorer les différentes fonctionnalités de l'application en détail avec des exemples illustrés.</p>
+    </header>
+
+    <!-- Onglet 1: Accueil -->
+    <div class="section">
+        <h2>Onglet 1: Accueil</h2>
+        <p>Cet onglet offre un aperçu général des principales fonctionnalités du Dashboard. Il permet aux utilisateurs d'explorer les données du Diagnostic de Performance Énergétique (DPE) en utilisant divers outils comme des nuages de points, des boîtes à moustaches, des histogrammes, des cartes interactives et des graphiques personnalisés.</p>
+        <p>Sur la droite de l'écran, une carte de France met en évidence la position géographique du département de l'Allier en rouge, où les données DPE sont collectées et analysées dans l'application.</p>
+    </div>
+
+    <!-- Onglet 2: Contexte -->
+    <div class="section">
+        <h2>Onglet 2: Contexte</h2>
+        <p>L'onglet "Contexte du Projet" présente les informations sur la source des données DPE provenant d'Enedis, qui gère la distribution d'électricité en France.</p>
+        <p>La table de données interactive permet de visualiser et d'exporter des informations telles que la surface habitable, les étiquettes GES et DPE, et le type de bâtiment.</p>
+    </div>
+
+    <!-- Onglet 3: Dashboard -->
+    <div class="section">
+        <h2>Onglet 3: Dashboard</h2>
+        <p>L'onglet Dashboard regroupe plusieurs fonctionnalités interactives permettant de visualiser et d'explorer les données sous différents angles :</p>
+
+        <!-- Accueil du Dashboard -->
+        <h3>1. Accueil du Dashboard</h3>
+        <p>En haut, les indicateurs principaux fournissent une vue d'ensemble des logements. On y trouve le nombre total de logements, la surface habitable moyenne, et le nombre de logements avec des DPE de classe A ou B.</p>
+        <p>Le graphique à barres montre la distribution des logements selon les différentes étiquettes DPE (A à G), illustrant la répartition des performances énergétiques.</p>
+        <p>Ce graphique linéaire représente l'évolution des diagnostics DPE par année, permettant d'identifier les tendances dans la performance énergétique des logements sur plusieurs années.</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/accueil dashboard.png" alt="Dashboard avec statistiques et graphiques">
+
+
+        <!-- Fonctionnalités du Dashboard -->
+        <h3>2. Nuage de Points</h3>
+        <p>Le Nuage de Points permet de visualiser la relation entre deux variables sélectionnées par l'utilisateur. Chaque point représente un logement, et les axes et la couleur des points peuvent être personnalisés en fonction des variables choisies, comme l'année de construction, l'étiquette DPE, ou d'autres informations.</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/nuage de points dpe.png" alt="Nuage de points des logements">
+
+        <h3>3. Boîte à Moustaches</h3>
+        <p>Cette section permet de visualiser la répartition des logements en fonction de deux variables sélectionnées. Les boîtes à moustaches montrent la distribution des valeurs, avec des options de personnalisation pour les variables comme l'étiquette GES, l'année de construction, ou d'autres critères.</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/boite a moustache.png" alt="Boîte à moustaches des logements">
+
+        <h3>4. Histogrammes</h3>
+        <p>Les Histogrammes offrent une vue d'ensemble de la distribution des données pour des variables sélectionnées par l'utilisateur. Cela permet d'analyser la fréquence des valeurs selon des critères personnalisés comme la date d'établissement du DPE, l'étiquette DPE, ou d'autres paramètres.</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/histogramme.png" alt="Histogramme des logements par étiquette DPE et date d&#39;établissement">
+
+        
+
+        <!-- Carte avec 3 sous-onglets -->
+        <h3>5. Carte</h3>
+        <p>La Carte interactive offre trois visualisations différentes selon les critères choisis :</p>
+
+        <!-- Sous-onglet DPE -->
+        <h4>a) Carte DPE</h4>
+        <p>Cette carte affiche les logements colorés selon leur étiquette DPE (Diagnostic de Performance Énergétique), permettant d'analyser l'efficacité énergétique des logements dans différentes régions. Chaque couleur représente une classe DPE allant de A (très efficace) à G (peu efficace).</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/carte dpe.png" alt="Carte interactive des logements par DPE">
+        
+        <h4>b) Carte GES</h4>
+        <p>Cette visualisation représente les logements colorés en fonction de leur étiquette GES (Gaz à Effet de Serre), offrant une vue d'ensemble des émissions de gaz à effet de serre des logements. Chaque couleur indique la classe d'émission, de A (faibles émissions) à G (émissions élevées).</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/carte ges.png" alt="Carte interactive des logements par GES">
+
+        <h4>c) Carte Type d'Habitations</h4>
+        <p>Ce mode de visualisation montre les logements en fonction de leur type (appartement, maison, immeuble), permettant de voir la distribution des différents types d'habitations dans les zones géographiques. Les couleurs représentent les catégories d'habitations.</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/carte type habitations.png" alt="Carte interactive des logements par type d&#39;habitations">        
+
+        <h3>6. Graphiques Personnalisés</h3>
+        <p>Cette section permet aux utilisateurs de générer leurs propres graphiques en sélectionnant des variables spécifiques. Cela offre une flexibilité maximale pour explorer les données sous différents angles en fonction des besoins d'analyse.</p>
+        <img src="./Documentation Fonctionnelle - Application RShiny_files/graphique perso.png" alt="Graphiques personnalisés des logements">
+    </div>
+
+    <footer>
+        <p>Documentation réalisée pour le projet de visualisation des données de l'Allier | CHARRADE Yoann ; COTTE Loic</p>
+    </footer>
+
+
+
+</body></html>
