@@ -1,0 +1,181 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Technique - Application RShiny</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #77aadd 3px solid;
+        }
+        header h1 {
+            text-align: center;
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 24px;
+        }
+        .section {
+            background: #fff;
+            padding: 30px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h3 {
+            color: #444;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            background: #f4f4f4;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: #77aadd 4px solid;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-left: #77aadd 4px solid;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .diagram {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Documentation Technique - Application RShiny</h1>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h3>1. Introduction</h3>
+            <p>L'application RShiny a pour objectif d'explorer les données des logements dans le département de l'Allier, en récupérant et visualisant ces informations à travers une interface interactive. Cette documentation explique le processus technique de mise en œuvre de l'application, y compris les flux de données, les scripts utilisés et la configuration nécessaire.</p>
+            <ul>
+                <li>Récupération des données depuis une API publique (données ADEME et adresses géographiques).</li>
+                <li>Traitement et enrichissement des données avec des coordonnées géographiques.</li>
+                <li>Affichage des données via une interface interactive avec cartes, graphiques et tableaux.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h3>2. Prérequis</h3>
+            <p>Pour faire fonctionner l'application, vous devez disposer des éléments suivants :</p>
+            <ul>
+                <li><strong>R version 4.0 ou supérieure</strong> : Assurez-vous d'avoir une version récente de R installée.</li>
+                <li><strong>RStudio</strong> : Bien que facultatif, RStudio facilite le développement et l'exécution du projet.</li>
+                <li><strong>Packages R requis :</strong></li>
+            </ul>
+            <p>Les packages nécessaires peuvent être installés en utilisant la commande suivante :</p>
+            <pre><code>install.packages(c("shiny", "httr", "ggplot2", "DT", "jsonlite"))</code></pre>
+            <ul>
+                <li><strong>shiny</strong> : Pour créer l'interface web interactive.</li>
+                <li><strong>httr</strong> : Pour effectuer des requêtes API et récupérer les données.</li>
+                <li><strong>ggplot2</strong> : Pour générer des graphiques et des visualisations de données.</li>
+                <li><strong>DT</strong> : Pour afficher les données dans des tableaux interactifs.</li>
+                <li><strong>jsonlite</strong> : Pour lire et traiter les données JSON récupérées via l'API.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h3>3. Installation des Packages</h3>
+            <p>Avant de lancer l'application, il est essentiel d'installer les packages R suivants :</p>
+            <ul>
+                <li><strong>Shiny :</strong> Interface utilisateur de l'application.</li>
+                <li><strong>HTTR :</strong> Gestion des requêtes API pour récupérer les données.</li>
+                <li><strong>GGPlot2 :</strong> Création des graphiques pour visualiser les informations récupérées.</li>
+                <li><strong>DT :</strong> Tables interactives pour afficher les données de manière dynamique.</li>
+                <li><strong>jsonlite :</strong> Chargement et manipulation des données JSON issues de l'API.</li>
+            </ul>
+            <p>Utilisez cette commande pour installer tous les packages en une seule fois :</p>
+            <pre><code>install.packages(c("shiny", "httr", "ggplot2", "DT", "jsonlite"))</code></pre>
+        </section>
+
+        <section class="section">
+            <h3>4. Flux de Données (Workflow)</h3>
+            <p>Voici le processus détaillé du flux de données dans l'application :</p>
+            <ol>
+                <li><strong>Récupération des données :</strong> Le script <code>code_recup_donnee_allier_api.R</code> effectue une requête à l'API <code>data.ademe.fr</code> pour récupérer les informations sur les logements.</li>
+                <li><strong>Ajout des données géographiques :</strong> Les coordonnées sont enrichies en utilisant le fichier <code>adresses-03.csv</code> provenant de <code>adresse.data.gouv.fr</code>. Le script <code>ajoute_donnee_geographique.R</code> gère cette étape.</li>
+                <li><strong>Création du fichier final :</strong> Un fichier CSV <code>merged_donnee.csv</code> est créé et contient les données complètes (logements + coordonnées).</li>
+                <li><strong>Visualisation :</strong> L'application Shiny est lancée via <code>app.R</code>, affichant les données sous forme de graphiques, de tableaux interactifs et de cartes géographiques.</li>
+            </ol>
+        </section>
+
+        <section class="section">
+            <h3>5. Lancer l'Application</h3>
+            <p>Pour démarrer l'application, ouvrez RStudio et exécutez la commande suivante :</p>
+            <pre><code>shiny::runApp("App.R")</code></pre>
+            <p>Une fois l'application lancée, vous aurez accès à une interface web interactive avec :</p>
+            <ul>
+                <li>Des graphiques sur la répartition des logements par étiquette GES et année de construction.</li>
+                <li>Une carte interactive montrant les logements sur une carte géographique.</li>
+                <li>Des tableaux de données filtrables et interactifs.</li>
+            </ul>
+        </section>
+
+        <section class="section diagram">
+            <h3>6. Schéma de l'Architecture</h3>
+            <p>Le schéma ci-dessous montre l'architecture technique de l'application :</p>
+            <img src="schema.png" alt="Schéma de l'Architecture" />
+            <p>Ce schéma montre les différentes étapes, de la récupération des données via l'API jusqu'à l'affichage des résultats dans l'application Shiny.</p>
+        </section>
+
+        <section class="section">
+            <h3>7. Détails des Scripts</h3>
+            <ul>
+                <li><strong>code recup donnee allier api.R</strong> : Récupère les données depuis l'API de <code>data.ademe.fr</code>.</li>
+                <li><strong>ajoute donnee geographique à la db.R</strong> : Ajoute les données géographiques (latitude/longitude) provenant de <code>adresse.data.gouv.fr</code>.</li>
+                <li><strong>app.R</strong> : Gère l'interface utilisateur et la logique Shiny pour afficher les données.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h3>8. Packages Utilisés</h3>
+            <ul>
+                <li><strong>shiny</strong> : Interface web pour afficher les graphiques, tables et cartes interactives.</li>
+                <li><strong>httr</strong> : Envoi des requêtes à l'API pour récupérer les données des logements.</li>
+                <li><strong>ggplot2</strong> : Génération de graphiques pour visualiser la répartition des données (par exemple, par étiquette GES, année de construction, etc.).</li>
+                <li><strong>DT</strong> : Création de tableaux interactifs permettant de filtrer et explorer les données récupérées.</li>
+                <li><strong>jsonlite</strong> : Conversion et manipulation des données JSON récupérées via l'API.</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p>Application RShiny - Enedis | Documentation Technique | CHARRADE Yoann ; COTTE Loic</p>
+    </footer>
+</body>
+</html>
+                
