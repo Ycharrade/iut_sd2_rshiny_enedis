@@ -189,7 +189,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   # Stockage de l'état de la connexion
-  user_logged_in <- reactiveVal(TRUE)#Changer d'opérateur booléen pr se connecter directement
+  user_logged_in <- reactiveVal(FALSE)#Changer d'opérateur booléen pr se connecter directement
   
   # Identifiants d'accès
   valid_user <- "User01"
